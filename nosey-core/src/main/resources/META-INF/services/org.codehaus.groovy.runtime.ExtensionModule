@@ -1,0 +1,3 @@
+moduleName=nosey-core
+moduleVersion=1.0
+extensionClasses=core.GPathResultFinderExtension

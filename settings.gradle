@@ -1,0 +1,5 @@
+
+rootProject.name = 'nosey'
+
+include 'nosey-core'
+include 'nosey-test'
