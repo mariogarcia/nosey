@@ -1,16 +1,12 @@
 package core
 
-import java.util.regex.Matcher
 import groovy.util.slurpersupport.NodeChild
-import groovy.util.slurpersupport.GPathResult
 
 /**
  *
  *
  */
 class GPathResultFinderExtension {
-
-    static final FINDER_ALL_REGEX = /findAll([\w]{1,})Where$/
 
     /**
      * This will add this "methodMissing" implementation to all NodeChild objects
@@ -22,42 +18,10 @@ class GPathResultFinderExtension {
      * type
      */
     static Object methodMissing(final NodeChild thisObject, String name, args) {
-        if (!buildMatcher(name).matches()) {
-            return thisObject.super.methodMissing(name,args)
-        }
-
-        return resolveAllFrom(thisObject, resolveElement(name), args)
-
-    }
-
-    /**
-     * This method builds a matcher using the method name we need to match and the
-     * general regular expression on top
-     *
-     * @param finderName The name of the method we want to know if matches the regular expression
-     * @return an instance of java.util.Matcher
-     */
-    private static Matcher buildMatcher(final String finderName) {
-        return finderName =~ FINDER_ALL_REGEX
-    }
-
-    /**
-     * This method applies the criteria passed to the "findAllXXXWhere" method as a Closure
-     */
-    private static resolveAllFrom(NodeChild nodeChild, String elementToLookFor, args) {
-        return nodeChild.'**'.
-            findAll { el -> el.name().toUpperCase() == elementToLookFor.toUpperCase() }.
-            findAll(args.first())
-    }
-
-    /**
-     * This method gets the type of element we are looking for.
-     *
-     * @param The method name
-     * @returns the part of the regular expression that represents the element we are looking for
-     */
-    private static String resolveElement(final String finderName) {
-        return buildMatcher(finderName)[0][1]
+        return ResolverType.values().
+            find({ String methodName, ResolverType type -> methodName ==~ type.regex }.curry(name)).
+            resolverInstance.
+            resolve(thisObject, name, args) ?: thisObject.super.methodMissing(name, args)
     }
 
 }
