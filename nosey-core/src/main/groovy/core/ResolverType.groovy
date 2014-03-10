@@ -2,8 +2,11 @@ package core
 
 enum ResolverType {
 
-    WHERE(/findAll([\w]{1,})Where$/, FindWhereResolver),
-    FINDBY(/findAll([\w]{1,})By$/, FindByResolver)
+    WHERE(/findAll($TERM_TO_FIND)Where$/, FindWhereResolver),
+    FINDBY(/findAll($TERM_TO_FIND)By($CONDITIONS)$/, FindByResolver)
+
+    private static final String TERM_TO_FIND = /[\w]{1,}/
+    private static final String CONDITIONS = /[\w]{1,}/
 
     String regex
     Class<Resolver> resolverClazz
