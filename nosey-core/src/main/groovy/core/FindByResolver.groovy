@@ -8,6 +8,9 @@ import groovy.util.slurpersupport.NodeChild
  */
 class FindByResolver extends BaseResolver {
 
+    /**
+     * This class is a helper to apply all conditions to the query
+     */
     private static class Fn {
 
         private final NodeChild base
