@@ -8,33 +8,8 @@ import groovy.util.slurpersupport.NodeChild
  */
 class FindByResolver extends BaseResolver {
 
-    /**
-     * This class is a helper to apply all conditions to the query
-     */
-    private static class Fn {
-
-        private final NodeChild base
-        private Closure constraints
-
-        private Fn() {}
-        private Fn(NodeChild base) {
-            this.base = base
-        }
-
-        static Fn from(final NodeChild base) {
-            return new Fn(base)
-        }
-
-        Fn filter (Closure<Boolean>... filters) {
-            this.constraints =  { fs, e -> fs*.call(e).every { x -> x } }.curry(filters as List)
-            return this
-        }
-
-        List getResult() {
-            return { pred, col -> col.findAll(pred) }.curry(constraints).call(base.'**')
-        }
-
-    }
+    private static final Closure<Condition> CONDITION_FILTER = { String f , Condition c -> f.contains(c.name()) ? c : null }
+    private static final String REGEX_AND_OR = /And|Or/
 
     /**
      * Default constructor
@@ -58,7 +33,7 @@ class FindByResolver extends BaseResolver {
      * @returns a list of NodeChild instances fullfilling the criteria
      */
     private List<NodeChild> getResult(final NodeChild base, final List<Condition> conditions) {
-        return Fn.from(base).filter(conditions).result
+
     }
 
     /**
@@ -68,9 +43,16 @@ class FindByResolver extends BaseResolver {
      * @returns a list of instances of type Condition
      */
     private List<Condition> resolveConditions(final String methodName) {
-        String rawConditions = buildMatcher(methodName)[0][2]
-        String nodeNameToSearch = resolveElement(methodName)
+        String term = buildMatcher(methodName)[0][2]
+        String query = buildMatcher(methodName)[0][3]
+        List<Map<String,Condition>> fragments = query.split(REGEX_AND_OR).collect { fragment ->
+            Condition c = Condition.findResult(CONDITION_FILTER.curry(fragment))
+            String f = fragment - c?.name()
 
+            return [term: f , condition: c ]
+        }
+
+        return fragment
     }
 
 }

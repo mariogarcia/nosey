@@ -5,23 +5,21 @@ package core
  */
 enum Condition {
 
-    GREATER_THAN            ({ a, b -> a > b }),
-    GREATER_THAN_EQUALS     ({ a, b -> a >= b }),
-    LESS_THAN               ({ a, b -> a < b }),
-    LESS_THAN_EQUALS        ({ a, b -> a <= b }),
-    LIKE                    ({ a, b -> "$a".startsWith("$b")}),
-    ILIKE                   ({ a, b -> "${a?.toUpperCase()}".startsWith("${b.toUpperCase()}")}),
-    IN_LIST                 ({ a, b -> a in b }),
-    BETWEEN                 ({ a, b, c -> b <= a && a >= c}),
-    IN_RANGE                ({ a, b -> a in b }),
-    IS_NULL                 ({ a -> a == null }),
-    IS_NOT_NULL             ({ a -> a != null }),
-    IS_EMPTY                ({ a -> "$a".trim().isEmpty() }),
-    IS_NOT_EMPTY            ({ a -> !"$a".trim().isEmpty() }),
-    EQUAL                   ({ a, b -> a == b }),
-    NOT_EQUAL               ({ a, b -> a != b }),
-    AND                     ({ a, b -> a && b }),
-    OR                      ({ a, b -> a || b })
+    GreaterThan         ({ a, b -> a > b }),
+    GreaterThanEquals   ({ a, b -> a >= b }),
+    LessThan            ({ a, b -> a < b }),
+    LessThanEquals      ({ a, b -> a <= b }),
+    Like                ({ a, b -> "$a".startsWith("$b")}),
+    ILike               ({ a, b -> "${a?.toUpperCase()}".startsWith("${b.toUpperCase()}")}),
+    InList              ({ a, b -> a in b }),
+    Between             ({ a, b, c -> b <= a && a >= c}),
+    InRange             ({ a, b -> a in b }),
+    IsNull              ({ a -> a == null }),
+    IsNotNull           ({ a -> a != null }),
+    IsEmpty             ({ a -> "$a".trim().isEmpty() }),
+    IsNotEmpty          ({ a -> !"$a".trim().isEmpty() }),
+    Equal               ({ a, b -> a == b }),
+    NotEqual            ({ a, b -> a != b })
 
     Closure<Boolean> expression
 
